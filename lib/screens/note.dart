@@ -26,23 +26,29 @@ class Note extends StatelessWidget {
               TextField(decoration: InputDecoration(hintText: 'Tittle'), maxLines: 2, ),
               TextField(decoration: InputDecoration(hintText: 'Write here'),),
                Container(
-                 width: 200,
+                 width: _noteMode == NoteMode.Editing ? 400 : 200,
                  margin: EdgeInsets.only(top: 300),
                   child: Card(
                     
-                    color: Colors.orange,
+                    color: Colors.purple,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                       FlatButton(
                         color: Colors.blue,
                         child: Text('save', style: TextStyle(color: Colors.white, fontSize: 18)),
                         onPressed: () {},
                       ),
-                      Spacer(),
+                      //Spacer(),
                       FlatButton(
                         child: Text('discard', style: TextStyle(fontSize: 18),),
                         onPressed: () {},
                       ),
+                      _noteMode == NoteMode.Editing ? 
+                      FlatButton(
+                        child: Text('Delete', style: TextStyle(fontSize: 18),),
+                        onPressed: () {},
+                      ) : Container(),
                     ]),
                   ))
             ],
