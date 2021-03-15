@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:smartnote/screens/note_llist.dart';
 import 'screens/homescreen.dart';
+import 'screens/note.dart';
 
 void main(){
-  runApp(App());
+  runApp(MyApp());
 }
 
-class App extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,6 +16,7 @@ class App extends StatelessWidget {
       home: HomeScreen(),
       routes: {
         NoteList.routeName: (ctx) => NoteList(),
+        Note.routeName: (ctx) => Note(NoteMode.Adding),
       }
     );
   }
