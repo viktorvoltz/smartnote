@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
 import 'note_llist.dart';
+import 'empty_note.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  List<Map<String, String>> get _notes => NoteInheritedWidget.of(context).notes;
+
+  @override
+  void didChangeDependencies() {
+    
+    super.didChangeDependencies();
+  }
+  
   @override
   Widget build(BuildContext context) {
-    
     double size = MediaQuery.of(context).size.height; 
     return Scaffold(
       appBar: AppBar(
@@ -13,17 +28,7 @@ class HomeScreen extends StatelessWidget {
         elevation: 0
       ),
 
-      body: Container(
-        alignment: Alignment.bottomCenter,
-        margin: EdgeInsets.only(bottom: 60),
-        child: RaisedButton(
-          child: Text('Get started'),
-          onPressed: (){
-            Navigator.of(context).pushNamed(NoteList.routeName);
-          },
-          color: Colors.blueAccent,
-        ),
-      ),
+      body: _notes.isEmpty ? EmptyNote() : NoteList()
     );
   }
 }
