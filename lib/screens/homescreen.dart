@@ -10,25 +10,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  List<Map<String, String>> get _notes => NoteInheritedWidget.of(context).notes;
+  List<Map<String, dynamic>> get _notes => NoteInheritedWidget.of(context).notes;
+
+  bool appState = true;
+
+  void change(){
+    if (_notes.isEmpty){
+      setState(() {
+        appState = false;
+      });
+    }
+  }
 
   @override
   void didChangeDependencies() {
-    
+    change();
     super.didChangeDependencies();
   }
   
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.height; 
+    //double size = MediaQuery.of(context).size.height; 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Smart Notes', style: TextStyle(color: Colors.black),),
+        title: const Text('Smart Notes', style: TextStyle(color: Colors.black),),
         backgroundColor: Colors.white,
         elevation: 0
       ),
 
-      body: _notes.isEmpty ? EmptyNote() : NoteList()
+      body: appState ? NoteList() : EmptyNote()
     );
   }
 }

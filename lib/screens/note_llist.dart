@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
+import 'package:smartnote/screens/views.dart';
 import 'note.dart';
+import 'views.dart';
+import 'dart:async';
+import 'package:intl/intl.dart';
 
 class NoteList extends StatefulWidget {
   static const routeName = 'NoteList';
+  //File pickedImage;
+
+  //NoteList({this.pickedImage});
 
   @override
   NoteListState createState() {
@@ -12,11 +19,13 @@ class NoteList extends StatefulWidget {
 }
 
 class NoteListState extends State<NoteList> {
-  List<Map<String, String>> get _notes => NoteInheritedWidget.of(context).notes;
+  List<Map<String, dynamic>> get _notes =>
+      NoteInheritedWidget.of(context).notes;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff272637),
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 300,
@@ -27,37 +36,38 @@ class NoteListState extends State<NoteList> {
         itemBuilder: (BuildContext ctx, index) {
           return GestureDetector(
             onTap: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Note(noteMode: NoteMode.Editing, index: index)));
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Views(index: index)));
               setState(() {});
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 10, right: 10),
-                child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 30.0, bottom: 30, left: 13.0, right: 22.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _NoteTittle(_notes[index]['title']),
-                        SizedBox(height: 4),
-                        _NoteText(_notes[index]['text']),
-                      ],
-                    )),
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 30.0, bottom: 30, left: 13.0, right: 22.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _notes[index]['photo'] == null ?
+                      Container() :
+                      Container(
+                        height: 50,
+                        width: 50,
+                        child: Image.file(_notes[index]['photo']),
+                      ),
+                      _NoteTittle(_notes[index]['title']),
+                      SizedBox(height: 4),
+                      _NoteText(_notes[index]['text']),
+                      Spacer(),
+                      Text(
+                        _notes[index]['time'],
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    ],
+                  )),
               decoration: BoxDecoration(
-                color: Colors.black38,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(10)
-              ),
+                  color: Color(0xff3B3A50),
+                  borderRadius: BorderRadius.circular(10)),
             ),
           );
         },
@@ -68,7 +78,7 @@ class NoteListState extends State<NoteList> {
         child: Row(
           children: [
             IconButton(
-              icon: Icon(Icons.menu),
+              icon: Icon(Icons.camera_alt),
               onPressed: () {},
             ),
             Spacer(),
@@ -87,8 +97,10 @@ class NoteListState extends State<NoteList> {
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),
         onPressed: () async {
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Note(noteMode: NoteMode.Adding)));
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Note(noteMode: NoteMode.Adding)));
           setState(() {});
         },
       ),
@@ -105,7 +117,7 @@ class _NoteText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _text,
-      style: TextStyle(color: Colors.grey.shade800, fontSize: 18),
+      style: TextStyle(color: Colors.white30, fontSize: 18),
       maxLines: 7,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.left,
@@ -121,11 +133,10 @@ class _NoteTittle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _tittle.toUpperCase(),
-      style: TextStyle(color: Colors.grey.shade800, fontSize: 30),
-      maxLines: 2,
+      style: TextStyle(color: Colors.white, fontSize: 30),
+      maxLines: 1,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
-
     );
   }
 }

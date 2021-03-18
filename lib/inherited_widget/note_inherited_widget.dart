@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NoteInheritedWidget extends InheritedWidget{
 
-  final List<Map<String, String>> notes = [
+  final List<Map<String, dynamic>> notes = [
     
 
   ];
