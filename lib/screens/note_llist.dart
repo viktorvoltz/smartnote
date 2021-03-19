@@ -44,10 +44,14 @@ class NoteListState extends State<NoteList> {
               margin: EdgeInsets.only(top: 20, left: 10, right: 10),
               child: Padding(
                   padding: const EdgeInsets.only(
-                      top: 30.0, bottom: 30, left: 13.0, right: 22.0),
+                      top: 15.0, bottom: 15, left: 13.0, right: 13.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      Container(
+                        height: 180,
+                        child: ListView(                        
+                          children: [
                       _notes[index]['photo'] == null ?
                       Container() :
                       Container(
@@ -58,6 +62,9 @@ class NoteListState extends State<NoteList> {
                       _NoteTittle(_notes[index]['title']),
                       SizedBox(height: 4),
                       _NoteText(_notes[index]['text']),
+                          ],
+                        ),
+                      ),
                       Spacer(),
                       Text(
                         _notes[index]['time'],
@@ -118,7 +125,7 @@ class _NoteText extends StatelessWidget {
     return Text(
       _text,
       style: TextStyle(color: Colors.white30, fontSize: 18),
-      maxLines: 7,
+      maxLines: 5,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.left,
     );
