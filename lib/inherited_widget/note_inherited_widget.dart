@@ -7,6 +7,11 @@ class NoteInheritedWidget extends InheritedWidget{
 
   ];
 
+  List lie (){
+    return [...notes].reversed.toList();
+  }
+
+
   NoteInheritedWidget(Widget child) : super(child: child);
 
   static NoteInheritedWidget of(BuildContext context){
@@ -19,3 +24,4 @@ class NoteInheritedWidget extends InheritedWidget{
     return oldWidget.notes != notes;
   }
 }
+

@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 
 class NoteList extends StatefulWidget {
   static const routeName = 'NoteList';
-  //File pickedImage;
+  //String time;
 
-  //NoteList({this.pickedImage});
+  //NoteList({this.time});
 
   @override
   NoteListState createState() {
@@ -20,10 +20,11 @@ class NoteList extends StatefulWidget {
 
 class NoteListState extends State<NoteList> {
   List<Map<String, dynamic>> get _notes =>
-      NoteInheritedWidget.of(context).notes;
+      NoteInheritedWidget.of(context).lie();
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color(0xff272637),
       body: GridView.builder(
@@ -36,42 +37,65 @@ class NoteListState extends State<NoteList> {
         itemBuilder: (BuildContext ctx, index) {
           return GestureDetector(
             onTap: () async {
-              await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Views(index: index)));
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Views(index: index, time: _notes[index]['time'])));
               setState(() {});
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 10, right: 10),
               child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 15.0, bottom: 15, left: 13.0, right: 13.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 180,
-                        child: ListView(                        
-                          children: [
-                      _notes[index]['photo'] == null ?
-                      Container() :
-                      Container(
-                        height: 50,
-                        width: 50,
-                        child: Image.file(_notes[index]['photo']),
+                padding: const EdgeInsets.only(
+                    top: 5.0, bottom: 5, left: 10.0, right: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _notes[index]['photo'] == null
+                              ? Container()
+                              : Container(
+                                  height: 70,
+                                  width: double.infinity,
+                                  child: Image.file(_notes[index]['photo'], fit: BoxFit.fill,),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20)
+                                  ),
+                                ),
+                          _NoteTittle(_notes[index]['title']),
+                          SizedBox(height: 4),
+                          _NoteText(_notes[index]['text']),
+                          _notes[index]['stext'] == 'speech text'
+                              ? Container()
+                              : Container(
+                                  child: Text(
+                                    _notes[index]['stext'],
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 30),
+                                    maxLines: 5,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                        ],
                       ),
-                      _NoteTittle(_notes[index]['title']),
-                      SizedBox(height: 4),
-                      _NoteText(_notes[index]['text']),
-                          ],
-                        ),
-                      ),
-                      Spacer(),
-                      Text(
+                    ),
+                    Spacer(),
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
                         _notes[index]['time'],
                         style: TextStyle(color: Colors.white54),
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
               decoration: BoxDecoration(
                   color: Color(0xff3B3A50),
                   borderRadius: BorderRadius.circular(10)),
@@ -80,24 +104,27 @@ class NoteListState extends State<NoteList> {
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        //shape:  CircularNotchedRectangle(),
+        shape: CircularNotchedRectangle(),
         color: Colors.purple,
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.camera_alt),
-              onPressed: () {},
-            ),
-            Spacer(),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {},
-            ),
-          ],
+        child: Container(
+          height: 50,
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.camera_alt),
+                onPressed: () {},
+              ),
+              Spacer(),
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {},
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

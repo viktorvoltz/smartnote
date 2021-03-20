@@ -5,8 +5,9 @@ import 'note_llist.dart';
 
 class Views extends StatefulWidget {
   final int index;
+  String time;
   //final File image;
-  Views({this.index});
+  Views({this.index, this.time});
 
   @override
   _ViewsState createState() => _ViewsState();
@@ -14,7 +15,8 @@ class Views extends StatefulWidget {
 
 class _ViewsState extends State<Views> {
   List<Map<dynamic, dynamic>> get _notes =>
-      NoteInheritedWidget.of(context).notes;
+      NoteInheritedWidget.of(context).lie();
+  List<Map<String, dynamic>> get _rnotes => NoteInheritedWidget.of(context).notes;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,16 @@ class _ViewsState extends State<Views> {
                     textAlign: TextAlign.left,
                   ),
                 ),
+                Container(
+                  child: Text(
+                    _notes[widget.index]['stext'],
+                    style: TextStyle(
+                      color: Colors.white30,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
                 SizedBox(height: 20),
                 Container(
                   alignment: Alignment.bottomRight,
@@ -81,7 +93,7 @@ class _ViewsState extends State<Views> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        Note(noteMode: NoteMode.Editing, index: widget.index),
+                        Note(noteMode: NoteMode.Editing, index: widget.index, id: widget.time),
                   ),
                 );
                 setState(() {});
@@ -91,14 +103,20 @@ class _ViewsState extends State<Views> {
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: () async {
-                _notes.removeAt(widget.index);
+                for (var i = 0; i <= _rnotes.length - 1; i++) {
+                  if (_rnotes[i]['time'] == widget.time) {
+                    _rnotes.removeAt(i);
+                    
+                  }
+                }
+               // _rnotes.removeWhere((element) => element[widget.index]['time'] == widget.time);
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => NoteList(),
                   ),
                 );
-                setState(() {});
+                //setState(() {});
               },
             ),
           ],
