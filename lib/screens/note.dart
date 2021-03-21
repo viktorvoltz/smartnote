@@ -94,25 +94,23 @@ class NoteState extends State<Note> {
     ssavedImage = savedImage;
   }
 
+
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
   }
 
+  
+    
+  
+
   @override
-  void didChangeDependencies() {
+  Widget build(BuildContext context) {
     if (widget.noteMode == NoteMode.Editing) {
       _titleController.text = _notes[widget?.index]['title'];
       _textController.text = _notes[widget?.index]['text'];
     }
-    super.didChangeDependencies();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
         title:
@@ -166,12 +164,14 @@ class NoteState extends State<Note> {
                   : Container(
                       //width: size.width * 0.5,
                       height: 300,
-                      width: screenWidth - 50,
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         border: Border.all(width: 1, color: Colors.grey),
                       ),
-                      child: Image.file(_storedImage,
-                          fit: BoxFit.fill,),
+                      child: Image.file(
+                        _storedImage,
+                        fit: BoxFit.fill,
+                      ),
                     ),
             ],
           ),
@@ -223,6 +223,7 @@ class NoteState extends State<Note> {
                       });
                       print(_notes);
                     } else if (widget?.noteMode == NoteMode.Editing) {
+                      
                       final title = _titleController.text;
                       final text = _textController.text;
                       /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')

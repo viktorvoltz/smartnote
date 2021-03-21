@@ -24,10 +24,10 @@ class NoteListState extends State<NoteList> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Color(0xff272637),
       body: GridView.builder(
+        physics: BouncingScrollPhysics(),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 300,
             childAspectRatio: 3 / 4,
@@ -58,11 +58,15 @@ class NoteListState extends State<NoteList> {
                           _notes[index]['photo'] == null
                               ? Container()
                               : Container(
+                                  margin: EdgeInsets.only(bottom: 2),
                                   height: 70,
                                   width: double.infinity,
-                                  child: Image.file(_notes[index]['photo'], fit: BoxFit.fill,),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: Image.file(
+                                      _notes[index]['photo'],
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ),
                           _NoteTittle(_notes[index]['title']),

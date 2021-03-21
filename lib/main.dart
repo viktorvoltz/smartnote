@@ -13,14 +13,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return NoteInheritedWidget(
         MaterialApp(
+          builder: (context, child){
+            return ScrollConfiguration(
+              behavior: MyBehavior(),
+              child: child,
+            );
+          },
         debugShowCheckedModeBanner: false,
         title: 'Smart Note',
         home: HomeScreen(),
         routes: {
           NoteList.routeName: (ctx) => NoteList(),
-          Note.routeName: (ctx) => Note(noteMode: NoteMode.Adding),
+          
         }
       ),
     );
+  }
+}
+
+class MyBehavior extends ScrollBehavior{
+  @override
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+    
+    return super.buildViewportChrome(context, child, axisDirection);
   }
 }
