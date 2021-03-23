@@ -25,6 +25,7 @@ class _ViewsState extends State<Views> {
     return Scaffold(
       backgroundColor: Color(0xff272637),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
           child: Column(
@@ -39,15 +40,15 @@ class _ViewsState extends State<Views> {
                         borderRadius: BorderRadius.circular(10),
                           child: Image.file(
                         _notes[widget.index]['photo'],
-                        fit: BoxFit.fill,
+                        fit: BoxFit.contain,
                       )),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10)),
                     ),
               Container(
                 child: Text(
-                  _notes[widget.index]['title'],
-                  style: TextStyle(color: Colors.white, fontSize: 25),
+                  _notes[widget.index]['title'].toString().toUpperCase(),
+                  style: TextStyle(fontFamily: 'Raleway', color: Colors.white, fontSize: 25),
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -56,7 +57,8 @@ class _ViewsState extends State<Views> {
                 child: Text(
                   _notes[widget.index]['text'],
                   style: TextStyle(
-                    color: Colors.white30,
+                    fontFamily: 'Raleway',
+                    color: Colors.white38,
                     fontSize: 20,
                   ),
                   textAlign: TextAlign.left,
@@ -67,6 +69,7 @@ class _ViewsState extends State<Views> {
                 child: Text(
                   _notes[widget.index]['stext'],
                   style: TextStyle(
+                    fontFamily: 'Raleway',
                     color: Colors.white30,
                     fontSize: 20,
                   ),
@@ -79,8 +82,10 @@ class _ViewsState extends State<Views> {
                 child: Text(
                   _notes[widget.index]['time'],
                   style: TextStyle(
+                    fontFamily: 'Roboto',
                     color: Colors.white30,
                     fontSize: 20,
+                    fontWeight: FontWeight.w100
                   ),
                   textAlign: TextAlign.right,
                 ),

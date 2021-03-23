@@ -45,65 +45,77 @@ class NoteListState extends State<NoteList> {
               setState(() {});
             },
             child: Container(
-              margin: EdgeInsets.only(top: 20, left: 10, right: 10),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 5.0, bottom: 5, left: 10.0, right: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          _notes[index]['photo'] == null
-                              ? Container()
-                              : Container(
-                                  margin: EdgeInsets.only(bottom: 2),
-                                  height: 70,
-                                  width: double.infinity,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: Image.file(
-                                      _notes[index]['photo'],
-                                      fit: BoxFit.fill,
-                                    ),
+              height: 200,
+                margin: EdgeInsets.only(top: 20, left: 10, right: 10),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 5.0, bottom: 5, left: 10.0, right: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 150,
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  _notes[index]['photo'] == null
+                                      ? Container()
+                                      : Container(
+                                          margin: EdgeInsets.only(bottom: 2),
+                                          height: 70,
+                                          width: double.infinity,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            child: Image.file(
+                                              _notes[index]['photo'],
+                                              fit: BoxFit.none,
+                                            ),
+                                          ),
+                                        ),
+                                  _NoteTittle(
+                                    _notes[index]['title'],
                                   ),
-                                ),
-                          _NoteTittle(_notes[index]['title']),
-                          SizedBox(height: 4),
-                          _NoteText(_notes[index]['text']),
-                          _notes[index]['stext'] == 'speech text'
-                              ? Container()
-                              : Container(
-                                  child: Text(
-                                    _notes[index]['stext'],
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 30),
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                        ],
-                      ),
+                                  SizedBox(height: 4),
+                                  _NoteText(_notes[index]['text']),
+                                  _notes[index]['stext'] == 'speech text'
+                                      ? Container()
+                                      : Container(
+                                          child: Text(
+                                            _notes[index]['stext'],
+                                            style:
+                                                Theme.of(context).textTheme.body1,
+                                            maxLines: 5,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            _notes[index]['time'],
+                            style: Theme.of(context).textTheme.body2,
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
                     ),
-                    Spacer(),
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        _notes[index]['time'],
-                        style: TextStyle(color: Colors.white54),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
+                  
                 ),
+                decoration: BoxDecoration(
+                    color: Color(0xff3B3A50),
+                    borderRadius: BorderRadius.circular(10)),
               ),
-              decoration: BoxDecoration(
-                  color: Color(0xff3B3A50),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
+            
           );
         },
       ),
@@ -135,7 +147,7 @@ class NoteListState extends State<NoteList> {
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),
         onPressed: () async {
-          await Navigator.push(
+          await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Note(noteMode: NoteMode.Adding)));
@@ -155,7 +167,7 @@ class _NoteText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _text,
-      style: TextStyle(color: Colors.white30, fontSize: 18),
+      style: Theme.of(context).textTheme.body1,
       maxLines: 5,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.left,
@@ -171,7 +183,7 @@ class _NoteTittle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       _tittle.toUpperCase(),
-      style: TextStyle(color: Colors.white, fontSize: 30),
+      style: Theme.of(context).textTheme.title,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,

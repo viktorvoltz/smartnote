@@ -40,7 +40,7 @@ class EmptyNote extends StatelessWidget {
               width: 250,
               child: FlatButton(
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Note(

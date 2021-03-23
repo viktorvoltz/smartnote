@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 enum NoteMode { Editing, Adding }
 
@@ -41,7 +42,8 @@ class NoteState extends State<Note> {
   stt.SpeechToText _speech;
   bool _isListening = false;
   String _stext = 'speech text';
-  double _confidence = 1.0;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   void _listen() async {
     if (!_isListening) {
@@ -55,9 +57,6 @@ class NoteState extends State<Note> {
         await _speech.listen(
             onResult: (val) => setState(() {
                   _stext = val.recognizedWords;
-                  if (val.hasConfidenceRating && val.confidence > 0) {
-                    _confidence = val.confidence;
-                  }
                 }));
       }
     } else {
@@ -94,16 +93,43 @@ class NoteState extends State<Note> {
     ssavedImage = savedImage;
   }
 
-
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
+    /*FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var androidInitialize = new AndroidInitializationSettings('app_icon');
+    var iosInitialize = new IOSInitializationSettings();
+    var initializationSettings =
+        InitializationSettings(android: androidInitialize, iOS: iosInitialize);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: notificationSelected);*/
   }
 
-  
-    
-  
+  Future _showNotification() async {
+    var androidDetails = new AndroidNotificationDetails(
+      "channelID",
+      "note notification",
+      "channelDescription",
+      importance: Importance.High,
+      priority: Priority.Max,
+      icon: 'app__icon',
+      sound: RawResourceAndroidNotificationSound('a_long_cold_string'),
+      largeIcon: DrawableResourceAndroidBitmap('app__icon'),
+    );
+    var iosDetails = new IOSNotificationDetails();
+    var generalNotificationDetails =
+        new NotificationDetails(androidDetails, iosDetails);
+
+    /*return await flutterLocalNotificationsPlugin.show(
+        1, "Task", "Task notification", generalNotificationDetails, payload: 'test notification');*/
+
+    var scheduledTime = DateTime.now().add(Duration(seconds: 6));
+
+
+    return await flutterLocalNotificationsPlugin.schedule(
+        0, "title", "body", scheduledTime, generalNotificationDetails, androidAllowWhileIdle: true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +139,16 @@ class NoteState extends State<Note> {
     }
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            onPressed: _showNotification,
+            icon: Icon(Icons.notifications_active_sharp),
+          )
+        ],
         title:
             Text(widget.noteMode == NoteMode.Adding ? 'Add Note' : 'Edit Note'),
       ),
@@ -223,7 +259,6 @@ class NoteState extends State<Note> {
                       });
                       print(_notes);
                     } else if (widget?.noteMode == NoteMode.Editing) {
-                      
                       final title = _titleController.text;
                       final text = _textController.text;
                       /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')
@@ -242,7 +277,7 @@ class NoteState extends State<Note> {
                         }
                       }
                     }
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => NoteList()));
                   },
                 ),
@@ -303,4 +338,11 @@ class NoteState extends State<Note> {
       ),
     );
   }
+
+  /*Future notificationSelected(String payload) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(content: Text('notification! $payload')),
+    );
+  }*/
 }
