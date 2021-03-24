@@ -105,6 +105,7 @@ class NoteState extends State<Note> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: notificationSelected);*/
   }
+  
 
   Future _showNotification() async {
     var androidDetails = new AndroidNotificationDetails(
@@ -127,8 +128,8 @@ class NoteState extends State<Note> {
     var scheduledTime = DateTime.now().add(Duration(seconds: 6));
 
 
-    return await flutterLocalNotificationsPlugin.schedule(
-        0, "title", "body", scheduledTime, generalNotificationDetails, androidAllowWhileIdle: true);
+    await flutterLocalNotificationsPlugin.schedule(
+        0, "title", "body", scheduledTime, generalNotificationDetails);
   }
 
   @override

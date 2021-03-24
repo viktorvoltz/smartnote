@@ -190,3 +190,4 @@ class _NoteTittle extends StatelessWidget {
     );
   }
 }
+
