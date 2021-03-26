@@ -93,7 +93,7 @@ class NoteListState extends State<NoteList> {
                                     ),
                                     SizedBox(height: 4),
                                     _NoteText(notess[index]['text']),
-                                    notess[index]['stext'] == 'speech text'
+                                    notess[index]['stext'] == 'speech text' || notess[index]['stext'] == 'null'
                                         ? Container()
                                         : Container(
                                             child: Text(
@@ -137,30 +137,6 @@ class NoteListState extends State<NoteList> {
           );
         },
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        color: Colors.purple,
-        child: Container(
-          height: 50,
-          child: Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.camera_alt),
-                onPressed: () {},
-              ),
-              Spacer(),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),
@@ -172,7 +148,7 @@ class NoteListState extends State<NoteList> {
           setState(() {});
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

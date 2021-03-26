@@ -35,6 +35,7 @@ class _EditScreenState extends State<EditScreen> {
   File _storedImage;
   File ssavedImage;
   String base64Image;
+  String time;
 
   stt.SpeechToText _speech;
   bool _isListening = false;
@@ -96,12 +97,19 @@ class _EditScreenState extends State<EditScreen> {
     _speech = stt.SpeechToText();
   }
 
-  
+  @override
+  void didChangeDependencies() {
+    _titleController.text =  widget.note['title'];
+    _textController.text =  widget.note['text'];
+    time = widget.note['time'];
+    _stext = widget.note['_stext'].toString().split(" ").join();
+    base64Image = widget.note['photo'];
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _titleController.text =  widget.note['title'];
-    _textController.text =  widget.note['text'];
+   
 
   
     return Scaffold(
@@ -120,7 +128,7 @@ class _EditScreenState extends State<EditScreen> {
                         cursorColor: Colors.purple,
                         cursorWidth: 2.0,
                         decoration: InputDecoration(
-                            hintText: 'Tittle', border: InputBorder.none),
+                            hintText: 'Title', border: InputBorder.none),
                         maxLines: 2,
                       ),
                       TextField(
@@ -163,10 +171,7 @@ class _EditScreenState extends State<EditScreen> {
                                 border:
                                     Border.all(width: 1, color: Colors.grey),
                               ),
-                              child: Image.file(
-                                _storedImage,
-                                fit: BoxFit.fill,
-                              ),
+                              child: Image.memory(base64.decode(widget.note['photo']), fit: BoxFit.cover,),
                             ),
                     ],
                   ))),
@@ -200,9 +205,9 @@ class _EditScreenState extends State<EditScreen> {
                   ),
                   //child: Text('save',style: TextStyle(color: Colors.white, fontSize: 18)),
                   onPressed: () {
-                    String time = DateFormat('MM-dd,EEE  kk:mm:ss')
-                        .format(DateTime.now())
-                        .toString();
+                    //String time = DateFormat('MM-dd,EEE  kk:mm:ss')
+                        //.format(DateTime.now())
+                        //.toString();
                     final title = _titleController.text;
                     final text = _textController.text;
                     /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')

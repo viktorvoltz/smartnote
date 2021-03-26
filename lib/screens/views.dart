@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
 import 'note.dart';
@@ -41,11 +40,12 @@ class _ViewsState extends State<Views> {
                       width: double.infinity,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                          child: Image.memory(base64.decode(widget.note['photo']), fit: BoxFit.none,)
+                          child: Image.memory(base64.decode(widget.note['photo']), fit: BoxFit.cover,)
                           ),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10)),
                     ),
+              SizedBox(height: 10),
               Container(
                 child: Text(
                   widget.note['title'].toString().toUpperCase(),
@@ -65,7 +65,7 @@ class _ViewsState extends State<Views> {
                   textAlign: TextAlign.left,
                 ),
               ),
-              widget.note['stext'] == 'speech text' ? Container() :
+              widget.note['stext'] == 'speech text' || widget.note['stext'] == 'null' ? Container() :
               Container(
                 child: Text(
                   widget.note['stext'],
