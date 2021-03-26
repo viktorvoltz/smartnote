@@ -27,9 +27,9 @@ class EmptyNote extends StatelessWidget {
             ),
             Container(
               child: Text(
-                'looks like your note is empty, \n let\'s make one now ;)',
+                'let\'s get you started',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, fontFamily: 'Roboto'),
               ),
             ),
             SizedBox(

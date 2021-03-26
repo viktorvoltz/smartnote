@@ -8,10 +8,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main(){
+  /*WidgetsFlutterBinding.ensureInitialized();
 
-  var initializationSettingsAndroid = AndroidInitializationSettings('app__icon');
+  var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/app_icon');
   var initializationSettingsIOS = IOSInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
@@ -23,7 +23,7 @@ void main() async {
     if (payload != null){
       debugPrint('notification payload: ' + payload);
     }
-  });
+  });*/
   runApp(MyApp());
 }
 
@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
         MaterialApp(
           theme: ThemeData(
             appBarTheme: AppBarTheme(
-              textTheme: TextTheme(title: AppBarTextStyle)
+              textTheme: TextTheme(title: AppBarTextStyle),
+              color: Color(0xff3B3A50),
             ),
             textTheme: TextTheme(
               title: TitleTextStyle,

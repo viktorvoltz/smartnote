@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
+import 'package:smartnote/providers/note_provider.dart';
 import 'package:smartnote/screens/note_llist.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -9,12 +10,15 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:image/image.dart' as imageprocess;
+import 'dart:convert';
 
 class EditScreen extends StatefulWidget {
   String id;
-  final int index;
+  //final int index;
+  final Map<String, dynamic> note;
 
-  EditScreen({this.id, this.index});
+  EditScreen({this.id, this.note});
 
   @override
   _EditScreenState createState() => _EditScreenState();
@@ -30,6 +34,7 @@ class _EditScreenState extends State<EditScreen> {
 
   File _storedImage;
   File ssavedImage;
+  String base64Image;
 
   stt.SpeechToText _speech;
   bool _isListening = false;
@@ -77,10 +82,12 @@ class _EditScreenState extends State<EditScreen> {
     setState(() {
       _storedImage = File(imageFile.path);
     });
+    final dimageFile = imageprocess.decodeImage(_storedImage.readAsBytesSync());
     final appDir = await syspaths.getApplicationDocumentsDirectory();
     final fileName = path.basename(imageFile.path);
     final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
     ssavedImage = savedImage;
+    base64Image = base64.encode(imageprocess.encodePng(dimageFile));
   }
 
   @override
@@ -89,11 +96,14 @@ class _EditScreenState extends State<EditScreen> {
     _speech = stt.SpeechToText();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    _titleController.text = _notes[widget?.index]['title'];
-    _textController.text = _notes[widget?.index]['text'];
+    _titleController.text =  widget.note['title'];
+    _textController.text =  widget.note['text'];
 
+  
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Note'),
@@ -198,7 +208,7 @@ class _EditScreenState extends State<EditScreen> {
                     /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')
                           .format(DateTime.now())
                           .toString();*/
-                    for (var i = 0; i <= _rnotes.length - 1; i++) {
+                    /*for (var i = 0; i <= _rnotes.length - 1; i++) {
                       if (_rnotes[i]['time'] == widget.id) {
                         _rnotes[i] = {
                           'title': title,
@@ -208,7 +218,15 @@ class _EditScreenState extends State<EditScreen> {
                           'stext': _stext
                         };
                       }
-                    }
+                    }*/
+                    NoteProvider.updateNote({
+                      'id': widget.note['id'],
+                      'title': _titleController.text,
+                      'text': _textController.text,
+                      'time': time,
+                      'photo': base64Image,
+                      'stext': _stext,
+                    });
                     final testtt = NoteList();
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => testtt));
@@ -232,12 +250,8 @@ class _EditScreenState extends State<EditScreen> {
                   Icons.delete,
                   color: Colors.white,
                 ),
-                onPressed: () {
-                  for (var i = 0; i <= _rnotes.length - 1; i++) {
-                    if (_rnotes[i]['time'] == widget.id) {
-                      _rnotes.removeAt(i);
-                    }
-                  }
+                onPressed: () async {
+                  await NoteProvider.deleteNote(widget.note['id']);
                   final tryyy = NoteList();
                   //_notes.removeAt(widget.index);
                   Navigator.push(

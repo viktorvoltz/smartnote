@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+
 class NoteInheritedWidget extends InheritedWidget{
 
   final List<Map<String, dynamic>> notes = [
     
 
   ];
+
 
   List lie (){
     return [...notes].reversed.toList();
@@ -24,4 +26,6 @@ class NoteInheritedWidget extends InheritedWidget{
     return oldWidget.notes != notes;
   }
 }
+
+
 

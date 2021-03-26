@@ -1,16 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
+import 'package:smartnote/providers/note_provider.dart';
 import 'package:smartnote/screens/views.dart';
 import 'note.dart';
 import 'views.dart';
+import 'package:image/image.dart' as imageprocess;
 import 'dart:async';
 import 'package:intl/intl.dart';
 
 class NoteList extends StatefulWidget {
   static const routeName = 'NoteList';
-  //String time;
+  //String image;
 
-  //NoteList({this.time});
+  //NoteList({this.image});
 
   @override
   NoteListState createState() {
@@ -19,103 +22,118 @@ class NoteList extends StatefulWidget {
 }
 
 class NoteListState extends State<NoteList> {
-  List<Map<String, dynamic>> get _notes =>
-      NoteInheritedWidget.of(context).lie();
+  //List<Map<String, dynamic>> get notes =>
+  //NoteInheritedWidget.of(context).lie();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff272637),
-      body: GridView.builder(
-        physics: BouncingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 300,
-            childAspectRatio: 3 / 4,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 10),
-        itemCount: _notes.length,
-        itemBuilder: (BuildContext ctx, index) {
-          return GestureDetector(
-            onTap: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Views(index: index, time: _notes[index]['time'])));
-              setState(() {});
-            },
-            child: Container(
-              height: 200,
-                margin: EdgeInsets.only(top: 20, left: 10, right: 10),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5.0, bottom: 5, left: 10.0, right: 10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 150,
-                          child: SingleChildScrollView(
-                            physics: BouncingScrollPhysics(),
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  _notes[index]['photo'] == null
-                                      ? Container()
-                                      : Container(
-                                          margin: EdgeInsets.only(bottom: 2),
-                                          height: 70,
-                                          width: double.infinity,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            child: Image.file(
-                                              _notes[index]['photo'],
-                                              fit: BoxFit.none,
+      body: FutureBuilder(
+        future: NoteProvider.getNoteList(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            //final _byteImage = Base64Decoder().convert(widget.image);
+            print('fuclkkkkk');
+            final List notes = snapshot.data;
+            List notess = notes.reversed.toList();
+            print(notes);
+            return GridView.builder(
+              physics: BouncingScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 300,
+                  childAspectRatio: 3 / 4,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 10),
+              itemCount: notess.length,
+              itemBuilder: (BuildContext ctx, index) {
+                return GestureDetector(
+                  onTap: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Views(
+                                  index: index,
+                                  time: notess[index]['time'],
+                                  note: notess[index],
+                                )));
+                    setState(() {});
+                  },
+                  child: Container(
+                    height: 200,
+                    margin: EdgeInsets.only(top: 20, left: 10, right: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 5.0, bottom: 5, left: 10.0, right: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 150,
+                            child: SingleChildScrollView(
+                              physics: BouncingScrollPhysics(),
+                              child: Container(
+                                child: Column(
+                                  children: [
+                                    notess[index]['photo'] == null
+                                        ? Container()
+                                        : Container(
+                                            margin: EdgeInsets.only(bottom: 2),
+                                            height: 70,
+                                            width: double.infinity,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              child: Image.memory(base64.decode(notess[index]['photo']), fit: BoxFit.none,),
                                             ),
                                           ),
-                                        ),
-                                  _NoteTittle(
-                                    _notes[index]['title'],
-                                  ),
-                                  SizedBox(height: 4),
-                                  _NoteText(_notes[index]['text']),
-                                  _notes[index]['stext'] == 'speech text'
-                                      ? Container()
-                                      : Container(
-                                          child: Text(
-                                            _notes[index]['stext'],
-                                            style:
-                                                Theme.of(context).textTheme.body1,
-                                            maxLines: 5,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.left,
+                                    _NoteTittle(
+                                      notess[index]['title'],
+                                    ),
+                                    SizedBox(height: 4),
+                                    _NoteText(notess[index]['text']),
+                                    notess[index]['stext'] == 'speech text'
+                                        ? Container()
+                                        : Container(
+                                            child: Text(
+                                              notess[index]['stext'],
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .body1,
+                                              maxLines: 5,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.left,
+                                            ),
                                           ),
-                                        ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Spacer(),
-                        Container(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(
-                            _notes[index]['time'],
-                            style: Theme.of(context).textTheme.body2,
-                            overflow: TextOverflow.fade,
-                            maxLines: 1,
+                          Spacer(),
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              notess[index]['time'],
+                              style: Theme.of(context).textTheme.body2,
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  
-                ),
-                decoration: BoxDecoration(
-                    color: Color(0xff3B3A50),
-                    borderRadius: BorderRadius.circular(10)),
-              ),
-            
+                    decoration: BoxDecoration(
+                        color: Color(0xff3B3A50),
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                );
+              },
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
           );
         },
       ),
@@ -190,4 +208,3 @@ class _NoteTittle extends StatelessWidget {
     );
   }
 }
-

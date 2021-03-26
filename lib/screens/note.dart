@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
+import 'package:smartnote/providers/note_provider.dart';
 import 'package:smartnote/screens/note_llist.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -10,15 +11,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:image/image.dart' as imageprocess;
+import 'dart:convert';
+import 'dart:typed_data';
 
 enum NoteMode { Editing, Adding }
 
 class Note extends StatefulWidget {
   final NoteMode noteMode;
-  final int index;
+  final Map<String, dynamic> note;
   String id;
 
-  Note({this.noteMode, this.index, this.id});
+  Note({this.noteMode, this.note, this.id});
 
   static const routeName = 'Note';
 
@@ -31,17 +35,18 @@ class Note extends StatefulWidget {
 class NoteState extends State<Note> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
-  List<Map<String, dynamic>> get _notes =>
-      NoteInheritedWidget.of(context).lie();
-  List<Map<String, dynamic>> get _rnotes =>
-      NoteInheritedWidget.of(context).notes;
+  //List<Map<String, dynamic>> get _notes =>
+      //NoteInheritedWidget.of(context).lie();
+ // List<Map<String, dynamic>> get _rnotes =>
+      //NoteInheritedWidget.of(context).notes;
 
   File _storedImage;
-  File ssavedImage;
+  File photo;
+  String base64Image;
 
   stt.SpeechToText _speech;
   bool _isListening = false;
-  String _stext = 'speech text';
+  String stext = 'speech text';
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -56,7 +61,7 @@ class NoteState extends State<Note> {
         setState(() => _isListening = true);
         await _speech.listen(
             onResult: (val) => setState(() {
-                  _stext = val.recognizedWords;
+                  stext = val.recognizedWords;
                 }));
       }
     } else {
@@ -87,10 +92,12 @@ class NoteState extends State<Note> {
     setState(() {
       _storedImage = File(imageFile.path);
     });
+    final dimageFile = imageprocess.decodeImage(_storedImage.readAsBytesSync());
     final appDir = await syspaths.getApplicationDocumentsDirectory();
     final fileName = path.basename(imageFile.path);
     final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
-    ssavedImage = savedImage;
+    photo = savedImage;
+    base64Image = base64.encode(imageprocess.encodePng(dimageFile));
   }
 
   @override
@@ -107,16 +114,16 @@ class NoteState extends State<Note> {
   }
   
 
-  Future _showNotification() async {
+  /*Future _showNotification() async {
     var androidDetails = new AndroidNotificationDetails(
       "channelID",
       "note notification",
       "channelDescription",
       importance: Importance.High,
       priority: Priority.Max,
-      icon: 'app__icon',
+      icon: 'launch_icon',
       sound: RawResourceAndroidNotificationSound('a_long_cold_string'),
-      largeIcon: DrawableResourceAndroidBitmap('app__icon'),
+      largeIcon: DrawableResourceAndroidBitmap('launch_icon'),
     );
     var iosDetails = new IOSNotificationDetails();
     var generalNotificationDetails =
@@ -130,26 +137,26 @@ class NoteState extends State<Note> {
 
     await flutterLocalNotificationsPlugin.schedule(
         0, "title", "body", scheduledTime, generalNotificationDetails);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
-    if (widget.noteMode == NoteMode.Editing) {
-      _titleController.text = _notes[widget?.index]['title'];
-      _textController.text = _notes[widget?.index]['text'];
-    }
+    /*if (widget.noteMode == NoteMode.Editing) {
+      _titleController.text = widget.note['title'];
+      _textController.text = widget.note['text'];
+    }*/
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
+        /*actions: [
           IconButton(
             onPressed: _showNotification,
             icon: Icon(Icons.notifications_active_sharp),
           )
-        ],
+        ],*/
         title:
             Text(widget.noteMode == NoteMode.Adding ? 'Add Note' : 'Edit Note'),
       ),
@@ -163,7 +170,7 @@ class NoteState extends State<Note> {
                 cursorColor: Colors.purple,
                 cursorWidth: 10.0,
                 decoration: InputDecoration(
-                    hintText: 'Tittle', border: InputBorder.none),
+                    hintText: 'Title', border: InputBorder.none),
                 maxLines: 2,
               ),
               TextField(
@@ -184,7 +191,7 @@ class NoteState extends State<Note> {
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(top: 20, bottom: 50),
                   child: TextHighlight(
-                    text: _stext,
+                    text: stext,
                     textAlign: TextAlign.left,
                     words: _highlights,
                     textStyle: const TextStyle(
@@ -206,7 +213,7 @@ class NoteState extends State<Note> {
                         border: Border.all(width: 1, color: Colors.grey),
                       ),
                       child: Image.file(
-                        _storedImage,
+                       _storedImage,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -251,14 +258,17 @@ class NoteState extends State<Note> {
                       /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')
                           .format(DateTime.now())
                           .toString();*/
-                      _rnotes.add({
+                      int id;
+                      Map<String, dynamic> note = ({
+                        //'id': id,
                         'title': title,
                         'text': text,
                         'time': time,
-                        'photo': ssavedImage,
-                        'stext': _stext,
+                        'photo': base64Image,
+                        'stext': stext,
                       });
-                      print(_notes);
+                      NoteProvider.insertNote('Notes', note);
+                      print('what the fuckkkkkkkk,   $id,  $base64Image');
                     } else if (widget?.noteMode == NoteMode.Editing) {
                       final title = _titleController.text;
                       final text = _textController.text;
@@ -266,19 +276,19 @@ class NoteState extends State<Note> {
                           .format(DateTime.now())
                           .toString();*/
 
-                      for (var i = 0; i <= _rnotes.length - 1; i++) {
+                      /*for (var i = 0; i <= _rnotes.length - 1; i++) {
                         if (_rnotes[i]['time'] == widget.id) {
                           _rnotes[i] = {
                             'title': title,
                             'text': text,
                             'time': time,
-                            'photo': ssavedImage,
-                            'stext': _stext
+                            'photo': photo,
+                            'stext': stext
                           };
                         }
-                      }
+                      }*/
                     }
-                    Navigator.pushReplacement(context,
+                    Navigator.push(context,
                         MaterialPageRoute(builder: (context) => NoteList()));
                   },
                 ),
@@ -302,11 +312,11 @@ class NoteState extends State<Note> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          for (var i = 0; i <= _rnotes.length - 1; i++) {
-                            if (_rnotes[i]['time'] == widget.id) {
-                              _rnotes.removeAt(i);
-                            }
-                          }
+                          //for (var i = 0; i <= _rnotes.length - 1; i++) {
+                           // if (_rnotes[i]['time'] == widget.id) {
+                             // _rnotes.removeAt(i);
+                           // }
+                         // }
                           //_notes.removeAt(widget.index);
                           Navigator.push(
                             context,
