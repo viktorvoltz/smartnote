@@ -13,9 +13,7 @@ class EmptyNote extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              //margin: EdgeInsets.only(left: 200),
               height: 300,
-              //color: Colors.grey,
               width: 300,
               child: SvgPicture.asset(
                 'assets/svg/illustration.svg',
@@ -40,7 +38,7 @@ class EmptyNote extends StatelessWidget {
               width: 250,
               child: FlatButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Note(

@@ -13,7 +13,6 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image/image.dart' as imageprocess;
 import 'dart:convert';
-import 'dart:typed_data';
 
 enum NoteMode { Editing, Adding }
 
@@ -241,7 +240,8 @@ class NoteState extends State<Note> {
               ),
               //Spacer(),
               Container(
-                child: IconButton(
+                child: Builder(builder: (context) => 
+                 IconButton(
                   //color: Colors.blue,
                   icon: Icon(
                     Icons.save,
@@ -267,8 +267,21 @@ class NoteState extends State<Note> {
                         'photo': base64Image,
                         'stext': stext,
                       });
-                      NoteProvider.insertNote('Notes', note);
-                      print('what the fuckkkkkkkk,   $id,  $base64Image');
+
+                      if(_titleController.text.isEmpty && _textController.text.isEmpty && base64Image == null && stext == 'speech text'){
+                        Scaffold.of(context).hideCurrentSnackBar();
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text('please make a note', style: Theme.of(context).textTheme.body1,),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                      }else{
+                        NoteProvider.insertNote('Notes', note);
+                        print('$base64Image');
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NoteList()));
+                      }
+
+                      
                     } else if (widget?.noteMode == NoteMode.Editing) {
                       final title = _titleController.text;
                       final text = _textController.text;
@@ -288,9 +301,9 @@ class NoteState extends State<Note> {
                         }
                       }*/
                     }
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => NoteList()));
+                    
                   },
+                ),
                 ),
               ),
               Container(

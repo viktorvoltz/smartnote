@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'inherited_widget/note_inherited_widget.dart';
 import 'package:smartnote/screens/note_llist.dart';
 import 'screens/homescreen.dart';
-import 'screens/note.dart';
 import 'model/style.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

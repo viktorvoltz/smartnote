@@ -141,7 +141,7 @@ class NoteListState extends State<NoteList> {
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),
         onPressed: () async {
-          await Navigator.pushReplacement(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => Note(noteMode: NoteMode.Adding)));

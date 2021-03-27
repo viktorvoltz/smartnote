@@ -3,7 +3,6 @@ import 'package:highlight_text/highlight_text.dart';
 import 'package:smartnote/inherited_widget/note_inherited_widget.dart';
 import 'package:smartnote/providers/note_provider.dart';
 import 'package:smartnote/screens/note_llist.dart';
-import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
@@ -99,8 +98,8 @@ class _EditScreenState extends State<EditScreen> {
 
   @override
   void didChangeDependencies() {
-    _titleController.text =  widget.note['title'];
-    _textController.text =  widget.note['text'];
+    _titleController.text = widget.note['title'];
+    _textController.text = widget.note['text'];
     time = widget.note['time'];
     _stext = widget.note['_stext'].toString().split(" ").join();
     base64Image = widget.note['photo'];
@@ -109,9 +108,6 @@ class _EditScreenState extends State<EditScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
-
-  
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Note'),
@@ -171,7 +167,10 @@ class _EditScreenState extends State<EditScreen> {
                                 border:
                                     Border.all(width: 1, color: Colors.grey),
                               ),
-                              child: Image.memory(base64.decode(widget.note['photo']), fit: BoxFit.cover,),
+                              child: Image.memory(
+                                base64.decode(widget.note['photo']),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                     ],
                   ))),
@@ -206,8 +205,8 @@ class _EditScreenState extends State<EditScreen> {
                   //child: Text('save',style: TextStyle(color: Colors.white, fontSize: 18)),
                   onPressed: () {
                     //String time = DateFormat('MM-dd,EEE  kk:mm:ss')
-                        //.format(DateTime.now())
-                        //.toString();
+                    //.format(DateTime.now())
+                    //.toString();
                     final title = _titleController.text;
                     final text = _textController.text;
                     /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')
@@ -233,7 +232,7 @@ class _EditScreenState extends State<EditScreen> {
                       'stext': _stext,
                     });
                     final testtt = NoteList();
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => testtt));
                   },
                 ),
@@ -255,16 +254,44 @@ class _EditScreenState extends State<EditScreen> {
                   Icons.delete,
                   color: Colors.white,
                 ),
-                onPressed: () async {
-                  await NoteProvider.deleteNote(widget.note['id']);
-                  final tryyy = NoteList();
-                  //_notes.removeAt(widget.index);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => tryyy,
-                    ),
-                  );
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            'DELETE ?',
+                            style: TextStyle(
+                                fontFamily: 'Raleway',
+                                color: Colors.black,
+                                fontSize: 25),
+                          ),
+                          content: Text(
+                            'Do you wish to delete this note?',
+                            style: TextStyle(
+                                fontFamily: 'Raleway',
+                                color: Colors.black,
+                                fontSize: 15),
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () async {
+                                await NoteProvider.deleteNote(
+                                    widget.note['id']);
+                                final tryyy = NoteList();
+                                //_notes.removeAt(widget.index);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => tryyy,
+                                  ),
+                                );
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        );
+                      });
                 },
               ))
             ],
