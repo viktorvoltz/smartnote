@@ -5,9 +5,6 @@ import 'package:smartnote/providers/note_provider.dart';
 import 'package:smartnote/screens/views.dart';
 import 'note.dart';
 import 'views.dart';
-import 'package:image/image.dart' as imageprocess;
-import 'dart:async';
-import 'package:intl/intl.dart';
 
 class NoteList extends StatefulWidget {
   static const routeName = 'NoteList';
@@ -35,7 +32,6 @@ class NoteListState extends State<NoteList> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             //final _byteImage = Base64Decoder().convert(widget.image);
-            print('fuclkkkkk');
             final List notes = snapshot.data;
             List notess = notes.reversed.toList();
             print(notes);

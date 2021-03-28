@@ -166,8 +166,8 @@ class NoteState extends State<Note> {
             children: [
               TextField(
                 controller: _titleController,
-                cursorColor: Colors.purple,
-                cursorWidth: 10.0,
+                cursorColor: Colors.blue,
+                cursorWidth: 2.0,
                 decoration: InputDecoration(
                     hintText: 'Title', border: InputBorder.none),
                 maxLines: 2,
@@ -176,9 +176,9 @@ class NoteState extends State<Note> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 textCapitalization: TextCapitalization.sentences,
-                cursorColor: Colors.purple,
+                cursorColor: Colors.blue,
                 //cursorRadius: Radius.circular(16.0),
-                cursorWidth: 10.0,
+                cursorWidth: 2.0,
                 //maxLength: 50,
                 controller: _textController,
                 decoration: InputDecoration(
@@ -203,7 +203,7 @@ class NoteState extends State<Note> {
               ),
               SizedBox(height: 5),
               _storedImage == null
-                  ? Container(child: Text('image will display here'))
+                  ? Container(child: Text('image will display here', style: Theme.of(context).textTheme.title,))
                   : Container(
                       //width: size.width * 0.5,
                       height: 300,
@@ -222,7 +222,7 @@ class NoteState extends State<Note> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        color: Colors.purple,
+        color: Color(0xff3B3A50),
         child: Container(
           padding: EdgeInsets.only(left: 20, right: 20),
           height: 50,
@@ -255,9 +255,6 @@ class NoteState extends State<Note> {
                     if (widget?.noteMode == NoteMode.Adding) {
                       final title = _titleController.text;
                       final text = _textController.text;
-                      /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')
-                          .format(DateTime.now())
-                          .toString();*/
                       int id;
                       Map<String, dynamic> note = ({
                         //'id': id,
@@ -285,21 +282,6 @@ class NoteState extends State<Note> {
                     } else if (widget?.noteMode == NoteMode.Editing) {
                       final title = _titleController.text;
                       final text = _textController.text;
-                      /*String time = DateFormat('MM-dd,EEE  kk:mm:ss')
-                          .format(DateTime.now())
-                          .toString();*/
-
-                      /*for (var i = 0; i <= _rnotes.length - 1; i++) {
-                        if (_rnotes[i]['time'] == widget.id) {
-                          _rnotes[i] = {
-                            'title': title,
-                            'text': text,
-                            'time': time,
-                            'photo': photo,
-                            'stext': stext
-                          };
-                        }
-                      }*/
                     }
                     
                   },
@@ -325,12 +307,6 @@ class NoteState extends State<Note> {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          //for (var i = 0; i <= _rnotes.length - 1; i++) {
-                           // if (_rnotes[i]['time'] == widget.id) {
-                             // _rnotes.removeAt(i);
-                           // }
-                         // }
-                          //_notes.removeAt(widget.index);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -363,10 +339,4 @@ class NoteState extends State<Note> {
     );
   }
 
-  /*Future notificationSelected(String payload) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(content: Text('notification! $payload')),
-    );
-  }*/
 }

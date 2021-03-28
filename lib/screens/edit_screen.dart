@@ -110,6 +110,10 @@ class _EditScreenState extends State<EditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading:  IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text('Edit Note'),
       ),
       body: Stack(
@@ -121,7 +125,7 @@ class _EditScreenState extends State<EditScreen> {
                     children: [
                       TextField(
                         controller: _titleController,
-                        cursorColor: Colors.purple,
+                        cursorColor: Colors.blue,
                         cursorWidth: 2.0,
                         decoration: InputDecoration(
                             hintText: 'Title', border: InputBorder.none),
@@ -131,7 +135,7 @@ class _EditScreenState extends State<EditScreen> {
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
-                        cursorColor: Colors.purple,
+                        cursorColor: Colors.blue,
                         //cursorRadius: Radius.circular(16.0),
                         cursorWidth: 2.0,
                         //maxLength: 50,
@@ -167,8 +171,8 @@ class _EditScreenState extends State<EditScreen> {
                                 border:
                                     Border.all(width: 1, color: Colors.grey),
                               ),
-                              child: Image.memory(
-                                base64.decode(widget.note['photo']),
+                              child: Image.file(
+                                _storedImage,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -178,7 +182,7 @@ class _EditScreenState extends State<EditScreen> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        color: Colors.purple,
+        color: Color(0xff3B3A50),
         child: Container(
           padding: EdgeInsets.only(left: 20, right: 20),
           height: 50,

@@ -16,16 +16,27 @@ class Views extends StatefulWidget {
 }
 
 class _ViewsState extends State<Views> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.0),
+        child: SafeArea(
+          child: AppBar(
+            elevation: 0.0,
+            backgroundColor: Color(0xff272637),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Color(0xff272637),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -35,9 +46,11 @@ class _ViewsState extends State<Views> {
                       height: 300,
                       width: double.infinity,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                          child: Image.memory(base64.decode(widget.note['photo']), fit: BoxFit.cover,)
-                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(
+                            base64.decode(widget.note['photo']),
+                            fit: BoxFit.cover,
+                          )),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10)),
                     ),
@@ -45,7 +58,8 @@ class _ViewsState extends State<Views> {
               Container(
                 child: Text(
                   widget.note['title'].toString().toUpperCase(),
-                  style: TextStyle(fontFamily: 'Raleway', color: Colors.white, fontSize: 25),
+                  style: TextStyle(
+                      fontFamily: 'Raleway', color: Colors.white, fontSize: 25),
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -61,29 +75,30 @@ class _ViewsState extends State<Views> {
                   textAlign: TextAlign.left,
                 ),
               ),
-              widget.note['stext'] == 'speech text' || widget.note['stext'] == 'null' ? Container() :
-              Container(
-                child: Text(
-                  widget.note['stext'],
-                  style: TextStyle(
-                    fontFamily: 'Raleway',
-                    color: Colors.white30,
-                    fontSize: 20,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
+              widget.note['stext'] == 'speech text' ||
+                      widget.note['stext'] == 'null'
+                  ? Container()
+                  : Container(
+                      child: Text(
+                        widget.note['stext'],
+                        style: TextStyle(
+                          fontFamily: 'Raleway',
+                          color: Colors.white30,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
               SizedBox(height: 40),
               Container(
                 alignment: Alignment.bottomRight,
                 child: Text(
                   widget.note['time'],
                   style: TextStyle(
-                    fontFamily: 'Roboto',
-                    color: Colors.white30,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w100
-                  ),
+                      fontFamily: 'Roboto',
+                      color: Colors.white30,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w100),
                   textAlign: TextAlign.right,
                 ),
               ),
@@ -94,16 +109,19 @@ class _ViewsState extends State<Views> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.orange,
-        child: Icon(Icons.edit, color: Colors.white,),
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
         onPressed: () async {
-           final first = EditScreen(note: widget.note, id:widget.time);
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => first,
-                  ),
-                );
-                //setState(() {});
+          final first = EditScreen(note: widget.note, id: widget.time);
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => first,
+            ),
+          );
+          //setState(() {});
         },
       ),
     );
