@@ -35,9 +35,9 @@ class NoteState extends State<Note> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _textController = TextEditingController();
   //List<Map<String, dynamic>> get _notes =>
-      //NoteInheritedWidget.of(context).lie();
- // List<Map<String, dynamic>> get _rnotes =>
-      //NoteInheritedWidget.of(context).notes;
+  //NoteInheritedWidget.of(context).lie();
+  // List<Map<String, dynamic>> get _rnotes =>
+  //NoteInheritedWidget.of(context).notes;
 
   File _storedImage;
   File photo;
@@ -99,6 +99,16 @@ class NoteState extends State<Note> {
     base64Image = base64.encode(imageprocess.encodePng(dimageFile));
   }
 
+  Future<void> _imageFromGallery() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, maxWidth: 600,);
+    setState(() {
+      _storedImage = image;
+    });
+    final dimageFile = imageprocess.decodeImage(_storedImage.readAsBytesSync());
+    base64Image = base64.encode(imageprocess.encodePng(dimageFile));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -111,7 +121,6 @@ class NoteState extends State<Note> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: notificationSelected);*/
   }
-  
 
   /*Future _showNotification() async {
     var androidDetails = new AndroidNotificationDetails(
@@ -203,16 +212,20 @@ class NoteState extends State<Note> {
               ),
               SizedBox(height: 5),
               _storedImage == null
-                  ? Container(child: Text('image will display here', style: Theme.of(context).textTheme.title,))
+                  ? Container(
+                      child: Text(
+                      'image will display here',
+                      style: Theme.of(context).textTheme.title,
+                    ))
                   : Container(
                       //width: size.width * 0.5,
-                      height: 300,
+                      height: 400,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.grey),
+                        border: Border.all(width: 1, color: Colors.transparent),
                       ),
                       child: Image.file(
-                       _storedImage,
+                        _storedImage,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -231,61 +244,95 @@ class NoteState extends State<Note> {
             children: <Widget>[
               Container(
                 child: IconButton(
-                  icon: Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
-                  ),
-                  onPressed: _takePicture,
-                ),
+                    icon: Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext ctx) {
+                          return SafeArea(
+                            child: Container(
+                              child: new Wrap(
+                                children: [
+                                  ListTile(
+                                      leading: Icon(Icons.photo_library),
+                                      title: Text('photo Library'),
+                                      onTap: () {
+                                        _imageFromGallery();
+                                        Navigator.pop(context);
+                                      }),
+                                  ListTile(
+                                      leading: Icon(Icons.camera_alt),
+                                      title: Text('camera'),
+                                      onTap: () {
+                                        _takePicture();
+                                        Navigator.pop(context);
+                                      }),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
               ),
               //Spacer(),
               Container(
-                child: Builder(builder: (context) => 
-                 IconButton(
-                  //color: Colors.blue,
-                  icon: Icon(
-                    Icons.save,
-                    color: Colors.white,
-                  ),
-                  //child: Text('save',style: TextStyle(color: Colors.white, fontSize: 18)),
-                  onPressed: () {
-                    String time = DateFormat('MM-dd,EEE  kk:mm:ss')
-                        .format(DateTime.now())
-                        .toString();
-                    if (widget?.noteMode == NoteMode.Adding) {
-                      final title = _titleController.text;
-                      final text = _textController.text;
-                      int id;
-                      Map<String, dynamic> note = ({
-                        //'id': id,
-                        'title': title,
-                        'text': text,
-                        'time': time,
-                        'photo': base64Image,
-                        'stext': stext,
-                      });
+                child: Builder(
+                  builder: (context) => IconButton(
+                    //color: Colors.blue,
+                    icon: Icon(
+                      Icons.save,
+                      color: Colors.white,
+                    ),
+                    //child: Text('save',style: TextStyle(color: Colors.white, fontSize: 18)),
+                    onPressed: () {
+                      String time = DateFormat('MM-dd,EEE  kk:mm:ss')
+                          .format(DateTime.now())
+                          .toString();
+                      if (widget?.noteMode == NoteMode.Adding) {
+                        final title = _titleController.text;
+                        final text = _textController.text;
+                        int id;
+                        Map<String, dynamic> note = ({
+                          //'id': id,
+                          'title': title,
+                          'text': text,
+                          'time': time,
+                          'photo': base64Image,
+                          'stext': stext,
+                        });
 
-                      if(_titleController.text.isEmpty && _textController.text.isEmpty && base64Image == null && stext == 'speech text'){
-                        Scaffold.of(context).hideCurrentSnackBar();
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('please make a note', style: Theme.of(context).textTheme.body1,),
-                            duration: Duration(seconds: 3),
-                          ),
-                        );
-                      }else{
-                        NoteProvider.insertNote('Notes', note);
-                        print('$base64Image');
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NoteList()));
+                        if (_titleController.text.isEmpty &&
+                            _textController.text.isEmpty &&
+                            base64Image == null &&
+                            stext == 'speech text') {
+                          Scaffold.of(context).hideCurrentSnackBar();
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'please make a note',
+                                style: Theme.of(context).textTheme.body1,
+                              ),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        } else {
+                          NoteProvider.insertNote('Notes', note);
+                          print('$base64Image');
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NoteList()));
+                        }
+                      } else if (widget?.noteMode == NoteMode.Editing) {
+                        final title = _titleController.text;
+                        final text = _textController.text;
                       }
-
-                      
-                    } else if (widget?.noteMode == NoteMode.Editing) {
-                      final title = _titleController.text;
-                      final text = _textController.text;
-                    }
-                    
-                  },
-                ),
+                    },
+                  ),
                 ),
               ),
               Container(
@@ -338,5 +385,4 @@ class NoteState extends State<Note> {
       ),
     );
   }
-
 }

@@ -43,13 +43,13 @@ class _ViewsState extends State<Views> {
               widget.note['photo'] == null
                   ? Container()
                   : Container(
-                      height: 300,
+                      height: 400,
                       width: double.infinity,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.memory(
                             base64.decode(widget.note['photo']),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                           )),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10)),

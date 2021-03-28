@@ -90,6 +90,16 @@ class _EditScreenState extends State<EditScreen> {
     base64Image = base64.encode(imageprocess.encodePng(dimageFile));
   }
 
+  Future<void> _imageFromGallery() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 100);
+    setState(() {
+      _storedImage = image;
+    });
+    final dimageFile = imageprocess.decodeImage(_storedImage.readAsBytesSync());
+    base64Image = base64.encode(imageprocess.encodePng(dimageFile));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -110,7 +120,7 @@ class _EditScreenState extends State<EditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading:  IconButton(
+        leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -191,12 +201,41 @@ class _EditScreenState extends State<EditScreen> {
             children: <Widget>[
               Container(
                 child: IconButton(
-                  icon: Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
-                  ),
-                  onPressed: _takePicture,
-                ),
+                    icon: Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext ctx) {
+                          return SafeArea(
+                            child: Container(
+                              child: new Wrap(
+                                children: [
+                                  ListTile(
+                                    leading: Icon(Icons.photo_library),
+                                    title: Text('photo Library'),
+                                    onTap: () {
+                                      _imageFromGallery();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.camera_alt),
+                                    title: Text('camera'),
+                                    onTap: () {
+                                      _takePicture();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
               ),
               //Spacer(),
               Container(
