@@ -92,7 +92,7 @@ class _EditScreenState extends State<EditScreen> {
 
   Future<void> _imageFromGallery() async {
     File image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 100);
+        source: ImageSource.gallery,  maxWidth: 600,);
     setState(() {
       _storedImage = image;
     });

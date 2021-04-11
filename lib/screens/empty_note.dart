@@ -6,6 +6,11 @@ class EmptyNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Smart Note', style: TextStyle(fontSize: 20, fontFamily: 'Roboto', color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
         body: Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(top: 20),
@@ -25,9 +30,9 @@ class EmptyNote extends StatelessWidget {
             ),
             Container(
               child: Text(
-                'let\'s get you started',
+                'Your note is empty',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontFamily: 'Roboto'),
+                style: TextStyle(fontSize: 20, fontFamily: 'Roboto', color: Colors.black),
               ),
             ),
             SizedBox(
